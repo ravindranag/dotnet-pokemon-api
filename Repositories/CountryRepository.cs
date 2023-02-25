@@ -39,5 +39,22 @@ namespace PokemonReviewApp.Repositories
 		{
 			return _mapper.Map<ICollection<OwnerDto>>(_context.Countries.Where(c => c.Id == countryId).SelectMany(c => c.Owners).ToList());
 		}
+
+		public bool CountryExists(string country)
+		{
+			return _context.Countries.Any(c => c.Name.Trim().ToUpper() == country.Trim().ToUpper());
+		}
+
+		public bool CreateCountry(Country country)
+		{
+			_context.Add(country);
+			return Save();
+		}
+
+		public bool Save()
+		{
+			var saved = _context.SaveChanges();
+			return saved > 0 ? true : false;
+		}
 	}
 }

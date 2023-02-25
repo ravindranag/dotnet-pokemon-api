@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
-using PokemonReviewApp.Repositories;
+using PokemonReviewApp.Models;
 using PokemonReviewApp.Interfaces;
 using PokemonReviewApp.Dto;
+using AutoMapper;
 
 namespace PokemonReviewApp.Controllers
 {
@@ -10,9 +11,11 @@ namespace PokemonReviewApp.Controllers
 	public class CountryController : Controller
 	{
 		private readonly ICountryRepository _countryRepository;
-		public CountryController(ICountryRepository countryRepository)
+		private readonly IMapper _mapper;
+		public CountryController(ICountryRepository countryRepository, IMapper mapper)
 		{
 			_countryRepository = countryRepository;
+			_mapper = mapper;
 		}
 
 		[HttpGet]
@@ -61,6 +64,29 @@ namespace PokemonReviewApp.Controllers
 			var country = _countryRepository.GetCountryByOwner(ownerId);
 			if(!ModelState.IsValid || country == null) return NotFound();
 			return Ok(country);
+		}
+
+		[HttpPost]
+		[ProducesResponseType(201)]
+		[ProducesResponseType(422)]
+		public IActionResult CreateCountry([FromBody] CountryDto country)
+		{
+			if(country == null)
+				return BadRequest(ModelState);
+
+			if(_countryRepository.CountryExists(country.Name))
+			{
+				ModelState.AddModelError("", "Country already exists");
+				return StatusCode(422, ModelState);
+			}
+
+			var newCountry = _mapper.Map<Country>(country);
+			if(_countryRepository.CreateCountry(newCountry))
+			{
+				ModelState.AddModelError("", "Something went wrong");
+				StatusCode(500, ModelState);
+			}
+			return StatusCode(201, "Country added successfully");
 		}
 	}
 }
