@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using PokemonReviewApp.Interfaces;
 using PokemonReviewApp.Dto;
+using PokemonReviewApp.Models;
+using AutoMapper;
 
 namespace PokemonReviewApp.Controllers
 {
@@ -9,9 +11,13 @@ namespace PokemonReviewApp.Controllers
 	public class OwnerController : Controller
 	{
 		private readonly IOwnerRepository _ownerRepository;
-		public OwnerController(IOwnerRepository ownerRepository)
+		private readonly IMapper _mapper;
+		private readonly ICountryRepository _countryRepository;
+		public OwnerController(IOwnerRepository ownerRepository, ICountryRepository countryRepository, IMapper mapper)
 		{
 			_ownerRepository = ownerRepository;
+			_mapper = mapper;
+			_countryRepository = countryRepository;
 		}
 
 		[HttpGet]
@@ -52,6 +58,28 @@ namespace PokemonReviewApp.Controllers
 			var owner = _ownerRepository.GetOwnerByPokemon(pokeId);
 			if(!ModelState.IsValid || owner == null) return NotFound();
 			return Ok(owner);
+		}
+
+		[HttpPost]
+		[ProducesResponseType(201)]
+		[ProducesResponseType(422)]
+		public IActionResult CreateOwner([FromBody] OwnerCreateDto owner)
+		{
+			if(owner == null)
+				return BadRequest();
+
+			if(_ownerRepository.OwnerExists(owner.FirstName, owner.LastName))
+			{
+				ModelState.AddModelError("", "Owner already exists");
+				return StatusCode(422, ModelState);
+			}
+			var newOwner = _mapper.Map<Owner>(owner);
+			if(!_ownerRepository.CreateOwner(newOwner))
+			{
+				ModelState.AddModelError("", "Something went wrong");
+				StatusCode(500, ModelState);
+			}
+			return StatusCode(201, "Owner added successfully");
 		}
 	}
 }

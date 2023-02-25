@@ -1,6 +1,7 @@
 using PokemonReviewApp.Dto;
 using PokemonReviewApp.Interfaces;
 using PokemonReviewApp.Postgres;
+using PokemonReviewApp.Models;
 using AutoMapper;
 
 namespace PokemonReviewApp.Repositories
@@ -40,6 +41,23 @@ namespace PokemonReviewApp.Repositories
 		public bool OwnerExists(int ownerId)
 		{
 			return _context.Owners.Any(o => o.Id == ownerId);
+		}
+
+		public bool OwnerExists(string firstName, string lastName)
+		{
+			return _context.Owners.Any(o => (o.FirstName.Trim() + o.LastName.Trim()).ToLower() == (firstName.Trim() + lastName.Trim()).ToLower());
+		}
+
+		public bool CreateOwner(Owner owner)
+		{
+			_context.Add(owner);
+			return Save();
+		}
+
+		public bool Save()
+		{
+			var saved = _context.SaveChanges();
+			return saved > 0 ? true : false;
 		}
 	}
 }
