@@ -1,11 +1,12 @@
 using PokemonReviewApp.Dto;
+using PokemonReviewApp.Models;
 
 namespace PokemonReviewApp.Interfaces
 {
 	public interface IReviewerRepository
 	{
 		ICollection<ReviewerDto> GetAllReviewers();
-		ReviewerDto GetReviewerById(int reviewerId);
+		ReviewerWithReviewsDto GetReviewerById(int reviewerId);
 		ICollection<ReviewDto> GetReviewsByReviewer(int reviewerId);
 		bool ReviewerExists(int reviewerId);
 	}

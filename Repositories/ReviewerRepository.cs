@@ -2,6 +2,8 @@ using PokemonReviewApp.Dto;
 using PokemonReviewApp.Interfaces;
 using PokemonReviewApp.Postgres;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using PokemonReviewApp.Models;
 
 namespace PokemonReviewApp.Repositories
 {
@@ -19,9 +21,9 @@ namespace PokemonReviewApp.Repositories
 			return _mapper.Map<ICollection<ReviewerDto>>(_context.Reviewers.OrderBy(r => r.Id).ToList());
 		}
 
-		public ReviewerDto GetReviewerById(int reviewerId)
+		public ReviewerWithReviewsDto GetReviewerById(int reviewerId)
 		{
-			return _mapper.Map<ReviewerDto>(_context.Reviewers.Where(r => r.Id == reviewerId).FirstOrDefault());
+			return _mapper.Map<ReviewerWithReviewsDto>(_context.Reviewers.Where(r => r.Id == reviewerId).Include(r => r.Reviews).FirstOrDefault());
 		}
 
 		public ICollection<ReviewDto> GetReviewsByReviewer(int reviewerId)

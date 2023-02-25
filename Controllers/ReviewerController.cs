@@ -25,7 +25,7 @@ namespace PokemonReviewApp.Controllers
 		}
 
 		[HttpGet("{reviewerId}")]
-		[ProducesResponseType(200, Type = typeof(ReviewerDto))]
+		[ProducesResponseType(200, Type = typeof(ReviewerWithReviewsDto))]
 		[ProducesResponseType(400)]
 		public IActionResult GetReviewerById(int reviewerId)
 		{
