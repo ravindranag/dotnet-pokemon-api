@@ -49,6 +49,11 @@ namespace PokemonReviewApp.Postgres {
 				.HasOne<Reviewer>(r => r.Reviewer)
 				.WithMany(r => r.Reviews)
 				.HasForeignKey(r => r.ReviewerId);
+
+			modelBuilder.Entity<Review>()
+				.HasOne<Pokemon>(r => r.Pokemon)
+				.WithMany(p => p.Reviews)
+				.HasForeignKey(r => r.PokemonId);
 		}
 
 		// protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) => optionsBuilder.UseNpgsql();
