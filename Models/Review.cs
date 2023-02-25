@@ -5,6 +5,7 @@ namespace PokemonReviewApp.Models {
 		public string Text { get; set; }
 		public decimal Rating { get; set; }
 		public Pokemon Pokemon { get; set; }
+		public int ReviewerId { get; set; }
 		public Reviewer Reviewer { get; set; }
 	}
 }
