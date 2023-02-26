@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using PokemonReviewApp.Interfaces;
 using PokemonReviewApp.Dto;
+using AutoMapper;
+using PokemonReviewApp.Models;
 
 namespace PokemonReviewApp.Controllers
 {
@@ -9,9 +11,12 @@ namespace PokemonReviewApp.Controllers
 	public class ReviewerController : Controller
 	{
 		private readonly IReviewerRepository _reviewerRepository;
-		public ReviewerController(IReviewerRepository reviewerRepository)
+		private readonly IMapper _mapper;
+		public ReviewerController(IReviewerRepository reviewerRepository, IMapper mapper)
 		{	
 			_reviewerRepository = reviewerRepository;
+			_mapper = mapper;
+
 		}
 
 		[HttpGet]
@@ -44,6 +49,30 @@ namespace PokemonReviewApp.Controllers
 			if(!ModelState.IsValid) return BadRequest(ModelState);
 
 			return Ok(reviews);
+		}
+
+		[HttpPost]
+		[ProducesResponseType(201)]
+		[ProducesResponseType(422)]
+		public IActionResult CreateReviewer([FromBody] ReviewerDto reviewer)
+		{
+			if(reviewer == null)
+				return BadRequest();
+			
+			if(_reviewerRepository.ReviewerExists(reviewer.FirstName, reviewer.LastName))
+			{
+				ModelState.AddModelError("", "Reviewer already exists");
+				return StatusCode(422, ModelState);
+			}
+
+			var newReviewer = _mapper.Map<Reviewer>(reviewer);
+			if(!_reviewerRepository.CreateReviewer(newReviewer))
+			{
+				ModelState.AddModelError("", "Something went wrong");
+				return StatusCode(500, ModelState);
+			}
+
+			return StatusCode(201, "Reviewer added successfully");
 		}
 	}
 }
