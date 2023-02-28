@@ -3,6 +3,7 @@ using PokemonReviewApp.Interfaces;
 using PokemonReviewApp.Postgres;
 using PokemonReviewApp.Models;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 
 namespace PokemonReviewApp.Repositories
 {
@@ -23,9 +24,9 @@ namespace PokemonReviewApp.Repositories
 			return _mapper.Map<ICollection<OwnerDto>>(_context.Owners.OrderBy(o => o.Id).ToList());
 		}
 
-		public OwnerDto GetOwnerById(int ownerId)
+		public OwnerDetailsDto GetOwnerById(int ownerId)
 		{
-			return _mapper.Map<OwnerDto>(_context.Owners.Where(o => o.Id == ownerId).FirstOrDefault());
+			return _mapper.Map<OwnerDetailsDto>(_context.Owners.Where(o => o.Id == ownerId).Include(o => o.Country).FirstOrDefault());
 		}
 
 		public OwnerDto GetOwnerByPokemon(int pokeId)
@@ -51,6 +52,12 @@ namespace PokemonReviewApp.Repositories
 		public bool CreateOwner(Owner owner)
 		{
 			_context.Add(owner);
+			return Save();
+		}
+
+		public bool UpdateOwner(Owner owner)
+		{
+			_context.Update(owner);
 			return Save();
 		}
 
