@@ -15,6 +15,7 @@ namespace PokemonReviewApp.Postgres {
 		public DbSet<Reviewer> Reviewers { set; get; }
 		public DbSet<PokemonCategory> PokemonCategories { set; get; }
 		public DbSet<PokemonOwner> PokemonOwners { set; get; }
+		public DbSet<User> Users { set; get; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder) {
 			modelBuilder.Entity<PokemonOwner>()
@@ -57,6 +58,10 @@ namespace PokemonReviewApp.Postgres {
 
 			modelBuilder.Entity<Pokemon>()
 				.HasIndex(p => p.Name)
+				.IsUnique();
+
+			modelBuilder.Entity<User>()
+				.HasIndex(u => u.Email)
 				.IsUnique();
 		}
 
