@@ -5,6 +5,7 @@ namespace PokemonReviewApp.Models {
 		public string LastName { get; set; }
 		public string Gym { get; set; }
 		public ICollection<PokemonOwner> PokemonOwners { get; set; }
+		public ICollection<Pokemon> Pokemons { get; set; }
 		public int CountryId { get; set; }
 		public Country Country { get; set; }
 	}

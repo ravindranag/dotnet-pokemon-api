@@ -8,7 +8,7 @@ namespace PokemonReviewApp.Interfaces
 		ICollection<OwnerDto> GetAllOwners();
 		OwnerDetailsDto GetOwnerById(int ownerId);
 		ICollection<PokemonDto> GetPokemonByOwner(int ownerId);
-		OwnerDto GetOwnerByPokemon(int pokeId);
+		ICollection<OwnerDto> GetOwnerByPokemon(int pokeId);
 		bool OwnerExists(int ownerId);
 		bool OwnerExists(string firstName, string lastName);
 		bool CreateOwner(Owner owner);

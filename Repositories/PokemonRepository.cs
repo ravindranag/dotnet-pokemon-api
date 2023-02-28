@@ -60,6 +60,27 @@ namespace PokemonReviewApp.Repositories
 			return Save();
 		}
 
+		public bool UpdatePokemon(int ownerId, int categoryId, Pokemon pokemon)
+		{
+			var pokemonOwner = new PokemonOwner
+			{
+				OwnerId = ownerId,
+				PokemonId = pokemon.Id
+			};
+
+			var pokemonCategory = new PokemonCategory
+			{
+				CategoryId = categoryId,
+				PokemonId = pokemon.Id
+			};
+
+			_context.Update(pokemon);
+			_context.Update(pokemonCategory);
+			_context.Update(pokemonOwner);
+
+			return Save();
+		}
+
 		public bool Save()
 		{
 			var saved = _context.SaveChanges();

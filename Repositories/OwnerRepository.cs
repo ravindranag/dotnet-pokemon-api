@@ -29,14 +29,14 @@ namespace PokemonReviewApp.Repositories
 			return _mapper.Map<OwnerDetailsDto>(_context.Owners.Where(o => o.Id == ownerId).Include(o => o.Country).FirstOrDefault());
 		}
 
-		public OwnerDto GetOwnerByPokemon(int pokeId)
+		public ICollection<OwnerDto> GetOwnerByPokemon(int pokeId)
 		{
-			return _mapper.Map<OwnerDto>(_context.PokemonOwners.Where(po => po.PokemonId == pokeId).Select(po => po.Owner).FirstOrDefault());
+			return _mapper.Map<ICollection<OwnerDto>>(_context.PokemonOwners.Where(po => po.PokemonId == pokeId).Select(po => po.Owner).ToList());
 		}
 
 		public ICollection<PokemonDto> GetPokemonByOwner(int ownerId)
 		{
-			return _mapper.Map<ICollection<PokemonDto>>(_context.PokemonOwners.Where(po => po.OwnerId == ownerId).Select(po => po.Pokemon));
+			return _mapper.Map<ICollection<PokemonDto>>(_context.PokemonOwners.Where(po => po.OwnerId == ownerId).Select(po => po.Pokemon).ToList());
 		}
 
 		public bool OwnerExists(int ownerId)
