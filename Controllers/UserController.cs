@@ -61,7 +61,9 @@ namespace PokemonReviewApp.Controllers
 			var token = new JwtSecurityToken(
 				claims: claims,
 				expires: DateTime.Now.AddDays(30),
-				signingCredentials: creds
+				signingCredentials: creds,
+				issuer: _configuration.GetSection("JWT:Issuer").Value,
+				audience: _configuration.GetSection("JWT:Audience").Value
 			);
 
 			var jwt = new JwtSecurityTokenHandler().WriteToken(token);
